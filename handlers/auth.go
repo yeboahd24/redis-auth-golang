@@ -25,6 +25,12 @@ func SignUp(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Validate password strength
+	if !utils.IsPasswordStrong(user.Password) {
+		http.Error(w, "Password must be at least 8 characters long and contain uppercase, lowercase, number, and special characters", http.StatusBadRequest)
+		return
+	}
+
 	exists, err := repository.UserExists(user.Email)
 	if err != nil {
 		http.Error(w, "Server error", http.StatusInternalServerError)

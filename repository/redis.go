@@ -1,7 +1,9 @@
 package repository
 
 import (
+	"context"
 	"fmt"
+	"time"
 
 	"redis-auth/config"
 	"redis-auth/models"
@@ -11,8 +13,11 @@ import (
 
 // GetUserByEmail retrieves the hashed password for a given email.
 func GetUserByEmail(email string) (string, error) {
+	ctx, cancel := context.WithTimeout(config.Ctx, 5*time.Second)
+	defer cancel()
+
 	key := fmt.Sprintf("user:%s", email)
-	return config.RedisClient.Get(config.Ctx, key).Result()
+	return config.RedisClient.Get(ctx, key).Result()
 }
 
 // CreateUser stores a new user with a hashed password.

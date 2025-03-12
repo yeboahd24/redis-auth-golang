@@ -54,9 +54,12 @@ func LoadConfig() (*Config, error) {
 // InitRedis initializes the Redis client using configuration values.
 func InitRedis(cfg *Config) error {
 	RedisClient = redis.NewClient(&redis.Options{
-		Addr:     cfg.RedisAddr,
-		Password: cfg.RedisPassword,
-		DB:       cfg.RedisDB,
+		Addr:         cfg.RedisAddr,
+		Password:     cfg.RedisPassword,
+		DB:           cfg.RedisDB,
+		PoolSize:     10, // Add connection pooling
+		MinIdleConns: 5,  // Maintain minimum idle connections
+		MaxRetries:   3,  // Add retry mechanism
 	})
 	_, err := RedisClient.Ping(Ctx).Result()
 	return err
